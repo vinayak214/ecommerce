@@ -13,9 +13,8 @@ const ProductItem = ({ item, index }: any) => {
                     height: 180
                 }}
                 source={{ uri: item.image }}>
-
             </Image>
-            <Text numberOfLines={1} style={{ width: 150, marginTop: 10 ,color:'black'}}>
+            <Text numberOfLines={1} style={{ width: 150, marginTop: 10, color: 'black' }}>
                 {item?.title}
             </Text>
 
@@ -27,7 +26,7 @@ const ProductItem = ({ item, index }: any) => {
                     justifyContent: "space-between",
                 }}
             >
-                <Text style={{ fontSize: 15, fontWeight: "bold" ,color:'black'}}>₹{item?.price}</Text>
+                <Text style={{ fontSize: 15, fontWeight: "bold", color: 'black' }}>₹{item?.price}</Text>
                 <Text style={{ color: "#FFC72C", fontWeight: "bold" }}>
                     {item?.rating?.rate} ratings
                 </Text>
@@ -41,7 +40,7 @@ const ProductItem = ({ item, index }: any) => {
                 marginHorizontal: 10,
                 marginTop: 10
             }}>
-                <Text style={{color:'black',fontWeight:'500'}}>Add to Cart</Text>
+                <Text style={{ color: 'black', fontWeight: '500' }}>Add to Cart</Text>
             </Pressable>
 
 

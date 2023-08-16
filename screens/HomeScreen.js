@@ -1,5 +1,5 @@
 import { ScrollView, StyleSheet, Text, TextInput, View, Pressable, FlatList, Image, Platform } from 'react-native'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Feather from 'react-native-vector-icons/Feather'
@@ -8,11 +8,30 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { SliderBox } from "react-native-image-slider-box";
 import axios from 'axios';
 import ProductItem from '../components/ProductItem'
+import DropDownPicker from 'react-native-dropdown-picker';
+import { useNavigation } from "@react-navigation/native";
+
 
 
 const HomeScreen = () => {
 
     const [products, setproducts] = useState([])
+    const [open, setOpen] = useState(false);
+    const [category, setCategory] = useState("jewelery");
+    const [companyOpen, setCompanyOpen] = useState(false);
+    const navigation = useNavigation();
+
+    const [items, setItems] = useState([
+        { label: "Men's clothing", value: "men's clothing" },
+        { label: "jewelery", value: "jewelery" },
+        { label: "electronics", value: "electronics" },
+        { label: "women's clothing", value: "women's clothing" },
+    ])
+
+    const onGenderOpen = useCallback(() => {
+        setCompanyOpen(false);
+    }, []);
+
 
     const list = [
         {
@@ -248,7 +267,7 @@ const HomeScreen = () => {
                     }}>
                     <Ionicons name="location-outline" size={24} color="black" />
 
-                    <Text style={{ fontSize: 13, fontWeight: "500",color:'black'}}>Deliver to Vinayak - Bentonville 72712</Text>
+                    <Text style={{ fontSize: 13, fontWeight: "500", color: 'black' }}>Deliver to Vinayak - Bentonville 72712</Text>
                     <MaterialIcons name="keyboard-arrow-down" size={24} color="black" />
 
                 </Pressable>
@@ -279,7 +298,7 @@ const HomeScreen = () => {
                                 fontSize: 12,
                                 fontWeight: "500",
                                 marginTop: 5,
-                                color:'black'
+                                color: 'black'
                             }}>{item.name}</Text>
                         </Pressable>
                     }
@@ -343,17 +362,30 @@ const HomeScreen = () => {
                     horizontal
                     data={offers}
                     renderItem={({ item }) =>
-                        <Pressable style={{
-                            alignItems: 'center',
-                            margin: 10,
-                            marginTop: 20,
-                            justifyContent: "center",
-                        }
-                        }>
+                        <Pressable
+                            onPress={() => {
+                                navigation.navigate("Info", {
+                                    id: item.id,
+                                    title: item.title,
+                                    price: item?.price,
+                                    carouselImages: item.carouselImages,
+                                    color: item?.color,
+                                    size: item?.size,
+                                    oldPrice: item?.oldPrice,
+                                    item: item,
+                                })
+                            }}
+                            style={{
+                                alignItems: 'center',
+                                margin: 10,
+                                marginTop: 20,
+                                justifyContent: "center",
+                            }
+                            }>
                             <Image
                                 style={{
-                                    width: 50,
-                                    height: 50,
+                                    width: 150,
+                                    height: 150,
                                     marginHorizontal: 20,
                                     resizeMode: "contain"
 
@@ -391,17 +423,52 @@ const HomeScreen = () => {
                     Shop by your Favorite Categories
                 </Text>
 
+
+                <View
+                    style={{
+                        marginHorizontal: 10,
+                        marginTop: 20,
+                        width: "45%",
+                        marginBottom: open ? 50 : 15,
+                    }}
+                >
+                    <DropDownPicker
+                        nestedScrollEnabled={true}
+                        style={{
+                            borderColor: "#B7B7B7",
+                            height: 30,
+                            marginBottom: open ? 120 : 15,
+                        }}
+                        open={open}
+                        value={category} //genderValue
+                        items={items}
+                        setOpen={setOpen}
+                        setValue={setCategory}
+                        setItems={setItems}
+                        placeholder="choose category"
+                        placeholderStyle={styles.placeholderStyles}
+                        onOpen={onGenderOpen}
+                        listMode="SCROLLVIEW"
+                        // onChangeValue={onChange}
+                        zIndex={3000}
+                        zIndexInverse={1000}
+                    />
+                </View>
+
+
                 <View style={{
                     flexWrap: 'wrap',
                     alignItems: 'center',
                     flexDirection: 'row',
-                    justifyContent:'space-between'
+                    justifyContent: 'space-between'
                 }}>
-                    {products.map((item, index) => (
 
-                        <ProductItem item={item} key={index} />
-                    ))}
+                    {products
+                        ?.filter((item) => item.category === category)
+                        .map((item, index) => (
+                            <ProductItem item={item} key={index} />
 
+                        ))}
                 </View>
             </ScrollView>
         </SafeAreaView>
