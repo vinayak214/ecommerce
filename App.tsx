@@ -1,11 +1,15 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import StackNavigator from './navigation/StackNavigator'
+import { Provider } from 'react-redux'
+import store from './store'
 
 const App = () => {
   return (
     <>
-      <StackNavigator />
+      <Provider store={store}>
+        <StackNavigator />
+      </Provider>
     </>
   )
 }

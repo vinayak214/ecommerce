@@ -10,6 +10,8 @@ import axios from 'axios';
 import ProductItem from '../components/ProductItem'
 import DropDownPicker from 'react-native-dropdown-picker';
 import { useNavigation } from "@react-navigation/native";
+import { useSelector } from "react-redux";
+
 
 
 
@@ -20,6 +22,10 @@ const HomeScreen = () => {
     const [category, setCategory] = useState("jewelery");
     const [companyOpen, setCompanyOpen] = useState(false);
     const navigation = useNavigation();
+    const cart = useSelector((state) => state.cart.cart);
+
+    console.log("Cart", cart);
+
 
     const [items, setItems] = useState([
         { label: "Men's clothing", value: "men's clothing" },
@@ -69,7 +75,6 @@ const HomeScreen = () => {
             name: "Fashion",
         },
     ];
-
     const carouselImages = [
         "https://m.media-amazon.com/images/I/71+X90OkTRL._SX3000_.jpg",
         "https://m.media-amazon.com/images/I/61QD0Q+UccL._SX3000_.jpg",
@@ -329,6 +334,18 @@ const HomeScreen = () => {
                 }}>
                     {deals.map((item, index) => (
                         <Pressable
+                            onPress={() => {
+                                navigation.navigate("Info", {
+                                    id: item.id,
+                                    title: item.title,
+                                    price: item?.price,
+                                    carouselImages: item.carouselImages,
+                                    color: item?.color,
+                                    size: item?.size,
+                                    oldPrice: item?.oldPrice,
+                                    item: item,
+                                })
+                            }}
                             key={index}
                             style={{
                                 marginVertical: 10,
@@ -363,6 +380,7 @@ const HomeScreen = () => {
                     data={offers}
                     renderItem={({ item }) =>
                         <Pressable
+                            key={item.id}
                             onPress={() => {
                                 navigation.navigate("Info", {
                                     id: item.id,
@@ -454,20 +472,16 @@ const HomeScreen = () => {
                         zIndexInverse={1000}
                     />
                 </View>
-
-
                 <View style={{
                     flexWrap: 'wrap',
                     alignItems: 'center',
                     flexDirection: 'row',
                     justifyContent: 'space-between'
                 }}>
-
                     {products
                         ?.filter((item) => item.category === category)
                         .map((item, index) => (
                             <ProductItem item={item} key={index} />
-
                         ))}
                 </View>
             </ScrollView>

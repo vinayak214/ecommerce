@@ -3,7 +3,9 @@ import React from 'react'
 
 const ProductItem = ({ item, index }: any) => {
     return (
-        <Pressable style={{
+        <Pressable 
+        key={index}
+        style={{
             marginHorizontal: 15,
             marginVertical: 25,
         }}>
@@ -17,7 +19,6 @@ const ProductItem = ({ item, index }: any) => {
             <Text numberOfLines={1} style={{ width: 150, marginTop: 10, color: 'black' }}>
                 {item?.title}
             </Text>
-
             <View
                 style={{
                     marginTop: 5,

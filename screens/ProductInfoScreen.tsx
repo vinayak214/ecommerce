@@ -1,23 +1,35 @@
 import { ScrollView, StyleSheet, Text, View, Pressable, TextInput, ImageBackground, Dimensions } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Feather from 'react-native-vector-icons/Feather'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart } from '../redux/CartReducer';
+
 
 const ProductInfoScreen = () => {
 
     const route: any = useRoute();
     const { width } = Dimensions.get("window");
     const height = (width * 100) / 100;
+    const dispatch = useDispatch();
+    const [addedToCart, setAddedToCart] = useState(false);
+
+
+    const addItemToCart = (item: any) => {
+        setAddedToCart(true);
+        dispatch(addToCart(item))
+        setTimeout(() => {
+            setAddedToCart(false);
+        }, 60000);
+    }
     return (
-        <ScrollView
-            key={route?.params.id}
-            style={{
-                backgroundColor: 'white',
-            }}>
+        <ScrollView 
+         key={route?.params.id}
+         style={{ backgroundColor: 'white' }}>
             <View
                 style={{
                     backgroundColor: "#00CED1",
@@ -26,7 +38,6 @@ const ProductInfoScreen = () => {
                     alignItems: "center",
                 }}>
                 <Pressable
-
                     style={{
                         flexDirection: "row",
                         alignItems: "center",
@@ -49,7 +60,6 @@ const ProductInfoScreen = () => {
                 <Feather name="mic" size={24} color="black" />
             </View>
             <ScrollView
-                key={route?.params.id}
                 horizontal
                 showsHorizontalScrollIndicator={false}>
                 {route?.params.carouselImages.map((item: any) => (
@@ -165,6 +175,7 @@ const ProductInfoScreen = () => {
                 }}>In Stock</Text>
 
                 <Pressable
+                    onPress={() => addItemToCart(route?.params.item)}
                     style={{
                         alignItems: 'center',
                         borderRadius: 20,
@@ -174,8 +185,12 @@ const ProductInfoScreen = () => {
                         padding: 10
 
                     }}>
+                    {addedToCart ? (
+                        <Text style={{ color: 'black', fontWeight: '500' }}>Added to Cart</Text>
+                    ) : (
+                        <Text style={{ color: 'black', fontWeight: '500' }}>Add to Cart</Text>
 
-                    <Text style={{ color: 'black', fontWeight: '500' }}>Add to Cart</Text>
+                    )}
                 </Pressable>
 
                 <Pressable

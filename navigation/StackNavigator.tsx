@@ -12,7 +12,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign'
 import Entypo from 'react-native-vector-icons/Entypo'
 import ProfileScreen from '../screens/ProfileScreen';
 import CartScreen from '../screens/CartScreen';
-import ProductInfoScreen from '../screens/screens/ProductInfoScreen';
+import ProductInfoScreen from '../screens/ProductInfoScreen';
 
 
 function BottomTabs() {
