@@ -1,14 +1,29 @@
 import { StyleSheet, Text, View, Pressable, Image } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart } from '../redux/CartReducer';
+
 
 const ProductItem = ({ item, index }: any) => {
+
+    const dispatch = useDispatch();
+    const [addedToCart, setAddedToCart] = useState(false);
+
+    const addItemToCart = (item: any) => {
+        setAddedToCart(true);
+        dispatch(addToCart(item))
+        setTimeout(() => {
+            setAddedToCart(false);
+        }, 60000);
+    }
+
     return (
-        <Pressable 
-        key={index}
-        style={{
-            marginHorizontal: 15,
-            marginVertical: 25,
-        }}>
+        <Pressable
+            key={index}
+            style={{
+                marginHorizontal: 15,
+                marginVertical: 25,
+            }}>
             <Image
                 style={{
                     width: 150,
@@ -33,15 +48,21 @@ const ProductItem = ({ item, index }: any) => {
                 </Text>
             </View>
 
-            <Pressable style={{
-                backgroundColor: '#FFC72C',
-                borderRadius: 20,
-                alignItems: 'center',
-                padding: 10,
-                marginHorizontal: 10,
-                marginTop: 10
-            }}>
-                <Text style={{ color: 'black', fontWeight: '500' }}>Add to Cart</Text>
+            <Pressable
+                onPress={() => { addItemToCart(item) }}
+                style={{
+                    backgroundColor: '#FFC72C',
+                    borderRadius: 20,
+                    alignItems: 'center',
+                    padding: 10,
+                    marginHorizontal: 10,
+                    marginTop: 10
+                }}>
+                {addedToCart ? (
+                    <Text style={{ color: 'black', fontWeight: '500' }}>Added to Cart</Text>
+                ) : (
+                    <Text style={{ color: 'black', fontWeight: '500' }}>Add to Cart</Text>
+                )}
             </Pressable>
 
 
