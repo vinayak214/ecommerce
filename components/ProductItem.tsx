@@ -19,7 +19,7 @@ const ProductItem = ({ item, index }: any) => {
 
     return (
         <Pressable
-            key={index}
+            key={item.id}
             style={{
                 marginHorizontal: 15,
                 marginVertical: 25,

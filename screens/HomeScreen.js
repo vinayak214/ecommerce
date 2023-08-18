@@ -335,6 +335,7 @@ const HomeScreen = () => {
                     }}>
                         {deals.map((item, index) => (
                             <Pressable
+                               key={item.id}
                                 onPress={() => {
                                     navigation.navigate("Info", {
                                         id: item.id,
@@ -476,7 +477,7 @@ const HomeScreen = () => {
                         {products
                             ?.filter((item) => item.category === category)
                             .map((item, index) => (
-                                <ProductItem item={item} key={index} />
+                                <ProductItem item={item} key={item.id} />
                             ))}
                     </View>
                 </ScrollView>
@@ -503,6 +504,10 @@ const HomeScreen = () => {
                         <ScrollView
                             horizontal>
                             <Pressable
+                                onPress={() => {
+                                    setModalVisible(!isModalVisible),
+                                        navigation.navigate("Address")
+                                }}
                                 style={{
                                     borderRadius: 6,
                                     borderWidth: 1,

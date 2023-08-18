@@ -13,6 +13,8 @@ import Entypo from 'react-native-vector-icons/Entypo'
 import ProfileScreen from '../screens/ProfileScreen';
 import CartScreen from '../screens/CartScreen';
 import ProductInfoScreen from '../screens/ProductInfoScreen';
+import AddAddressScreen from '../screens/AddAddressScreen';
+import AddressScreen from '../screens/AddressScreen';
 
 
 function BottomTabs() {
@@ -91,6 +93,16 @@ const StackNavigator = () => {
                 <Stack.Screen
                     name="Info"
                     component={ProductInfoScreen}
+                    options={{ headerShown: false }}
+                />
+                 <Stack.Screen
+                    name="Address"
+                    component={AddAddressScreen}
+                    options={{ headerShown: false }}
+                />
+                  <Stack.Screen
+                    name="Add"
+                    component={AddressScreen}
                     options={{ headerShown: false }}
                 />
             </Stack.Navigator>

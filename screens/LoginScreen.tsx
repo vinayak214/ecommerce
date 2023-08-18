@@ -16,7 +16,7 @@ const LoginScreen = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const navigation = useNavigation();
-    const [logged, setlogged]: any = useState('false')
+    const [logged, setlogged]: any = useState(false)
 
     useEffect(() => {
         const checkLoginStatus = async () => {
@@ -63,12 +63,12 @@ const LoginScreen = () => {
         }}>
             {!logged ? (
                 <>
-                <View>
-                    <Image
-                        style={{ width: 150, height: 100 }}
-                        source={{ uri: "https://assets.stickpng.com/thumbs/6160562276000b00045a7d97.png" }}>
-                    </Image>
-                </View><KeyboardAvoidingView>
+                    <View>
+                        <Image
+                            style={{ width: 150, height: 100 }}
+                            source={{ uri: "https://assets.stickpng.com/thumbs/6160562276000b00045a7d97.png" }}>
+                        </Image>
+                    </View><KeyboardAvoidingView>
                         <View style={{ alignItems: 'center' }}>
                             <Text style={{
                                 fontWeight: 'bold',
@@ -163,9 +163,10 @@ const LoginScreen = () => {
 
             ) : (
                 <View style={{
-                    justifyContent:'center',
-                    alignItems:'center',
-                    flex:1}}>
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    flex: 1
+                }}>
                     <Text style={{ color: 'blue', textAlign: 'center' }}>Loading.....!!</Text>
                 </View>
             )}

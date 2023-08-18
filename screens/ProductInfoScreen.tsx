@@ -8,8 +8,10 @@ import AntDesign from 'react-native-vector-icons/AntDesign'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
 const ProductInfoScreen = () => {
-
+    
     const route: any = useRoute();
+
+    console.log("route::" + route);
     const { width } = Dimensions.get("window");
     const height = (width * 100) / 100;
     return (
@@ -26,7 +28,6 @@ const ProductInfoScreen = () => {
                     alignItems: "center",
                 }}>
                 <Pressable
-
                     style={{
                         flexDirection: "row",
                         alignItems: "center",
