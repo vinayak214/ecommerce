@@ -1,5 +1,5 @@
 import { ScrollView, StyleSheet, Text, TextInput, View, Pressable, FlatList, Image, Platform, Modal, TouchableOpacity } from 'react-native'
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useContext } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Feather from 'react-native-vector-icons/Feather'
@@ -13,6 +13,10 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import { useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 import { BottomModal, SlideAnimation, ModalContent } from "react-native-modals";
+import { UserType } from '../context/UserContext'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import jwt_decode from "jwt-decode"
+
 
 
 
@@ -27,7 +31,12 @@ const HomeScreen = () => {
     const [companyOpen, setCompanyOpen] = useState(false);
     const navigation = useNavigation();
     const cart = useSelector((state) => state.cart.cart);
+    const { userId, setUserId } = useContext(UserType)
+    const [addresses, setAddresses] = useState([]);
+    const [selectedAddress,setSelectedAdress] = useState("");
 
+
+    console.log("selectedAddress" + JSON.stringify(selectedAddress));
 
     console.log("Cart", cart);
 
@@ -137,7 +146,7 @@ const HomeScreen = () => {
             size: "6 GB RAM 64GB Storage",
         },
         {
-            id: "40",
+            id: "50",
             title:
                 "realme narzo N55 (Prime Blue, 4GB+64GB) 33W Segment Fastest Charging | Super High-res 64MP Primary AI Camera",
             oldPrice: 12999,
@@ -228,12 +237,44 @@ const HomeScreen = () => {
 
     }, []);
 
-
     const showModal = () => {
         setModalVisible(!isModalVisible);
     };
 
+    useEffect(() => {
+        if (userId) {
+            console.log("if cond:" + userId);
+            fetchAddresses();
+        }
+    }, [userId, isModalVisible]);
+
+    const fetchAddresses = async () => {
+        try {
+            const response = await axios.get(
+                `http://192.168.0.14:8000/addresses/${userId}`
+            );
+            const { addresses } = response.data;
+
+            setAddresses(addresses);
+        } catch (error) {
+
+            console.log("error", error);
+        }
+    };
+    useEffect(() => {
+        const fetchUser = async () => {
+            const token = await AsyncStorage.getItem("authToken");
+            const decodedToken = jwt_decode(token);
+            const userId = decodedToken.userId;
+
+            console.log("HOMESCREEN::" + userId)
+            setUserId(userId);
+        };
+        fetchUser();
+    }, []);
+
     return (
+
         <>
             <SafeAreaView style={{
                 backgroundColor: 'white',
@@ -278,8 +319,11 @@ const HomeScreen = () => {
                             gap: 5
                         }}>
                         <Ionicons name="location-outline" size={24} color="black" />
-
-                        <Text style={{ fontSize: 13, fontWeight: "500", color: 'black' }}>Deliver to Vinayak - Bentonville 72712</Text>
+                        {selectedAddress?(
+                        <Text style={{ fontSize: 13, fontWeight: "500", color: 'black' }}>Deliver to {selectedAddress.name} - {selectedAddress.street}-{selectedAddress.postalCode}</Text>
+                        ):(
+                            <Text style={{ fontSize: 13, fontWeight: "500", color: 'black' }}>Add a Address</Text>
+                        )}
                         <MaterialIcons name="keyboard-arrow-down" size={24} color="black" />
 
                     </Pressable>
@@ -313,6 +357,8 @@ const HomeScreen = () => {
                     >
                     </FlatList>
                     <SliderBox
+                                               keyExtractor={(item) => item.id}
+
                         images={carouselImages}
                         autoPlay
                         circleLoop
@@ -335,7 +381,7 @@ const HomeScreen = () => {
                     }}>
                         {deals.map((item, index) => (
                             <Pressable
-                               key={item.id}
+                                key={item.id}
                                 onPress={() => {
                                     navigation.navigate("Info", {
                                         id: item.id,
@@ -348,7 +394,6 @@ const HomeScreen = () => {
                                         item: item,
                                     })
                                 }}
-                                key={index}
                                 style={{
                                     marginVertical: 10,
                                     flexDirection: "row",
@@ -380,7 +425,7 @@ const HomeScreen = () => {
                         horizontal
                         data={offers}
                         renderItem={({ item }) => <Pressable
-                            key={item.id}
+                            keyExtractor={item.id}
                             onPress={() => {
                                 navigation.navigate("Info", {
                                     id: item.id,
@@ -497,12 +542,61 @@ const HomeScreen = () => {
                 onTouchOutside={() => setModalVisible(!isModalVisible)}>
 
                 <ModalContent style={{ width: "100%", height: 400 }}>
-
                     <View style={{ marginBottom: 8, gap: 4 }}>
                         <Text style={{ fontWeight: 500, fontSize: 16, color: 'black' }}>Choose your Location</Text>
                         <Text style={{ fontWeight: 500, fontSize: 16, color: 'grey' }}>Select a delivery location to see product availabilty and delivery options</Text>
+
                         <ScrollView
                             horizontal>
+                            {addresses.map((item, index) => (
+
+                                <Pressable
+                                    onPress={() => setSelectedAdress(item)}
+                                    style={{
+                                        width: 140,
+                                        height: 140,
+                                        borderColor: "#D0D0D0",
+                                        borderWidth: 1,
+                                        padding: 10,
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                        gap: 3,
+                                        marginRight: 15,
+                                        marginTop: 10,
+                                        backgroundColor: selectedAddress === item ? "#FBCEB1" : "white"
+                                    }}
+                                >
+                                    <View
+                                        style={{ flexDirection: "row", alignItems: "center", gap: 3 }}
+                                    >
+                                        <Text style={{ fontSize: 13, fontWeight: "bold",
+                                    color:'black' }}>
+                                            {item?.name}
+                                        </Text>
+                                        <Entypo name="location-pin" size={24} color="red" />
+                                    </View>
+
+                                    <Text
+                                        numberOfLines={1}
+                                        style={{ width: 130, fontSize: 13, textAlign: "center" ,color:'black' }}
+                                    >
+                                        {item?.houseNo},{item?.landmark}
+                                    </Text>
+
+                                    <Text
+                                        numberOfLines={1}
+                                        style={{ width: 130, fontSize: 13, textAlign: "center",color:'black'  }}
+                                    >
+                                        {item?.street}
+                                    </Text>
+                                    <Text
+                                        numberOfLines={1}
+                                        style={{ width: 130, fontSize: 13, textAlign: "center" ,color:'black' }}
+                                    >
+                                        India, Bangalore
+                                    </Text>
+                                </Pressable>
+                            ))}
                             <Pressable
                                 onPress={() => {
                                     setModalVisible(!isModalVisible),
@@ -529,7 +623,9 @@ const HomeScreen = () => {
 
 
                             </Pressable>
+
                         </ScrollView>
+
                         <View style={{ flexDirection: "column", gap: 7, marginVertical: 20 }}>
                             <View
                                 style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
